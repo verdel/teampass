@@ -3195,6 +3195,139 @@ if ($_SESSION['settings']['upload_imageresize_options'] == 1) {
             }
         }
     });
+
+    //DIALOG FOR AUTO UPDATE SERVER PASSWORD
+    $("#dialog_auto_update_server_pwd").dialog({
+        bgiframe: true,
+        modal: true,
+        autoOpen: false,
+        width: 600,
+        height: 390,
+        title: "<?php echo $LANG['update_server_password'];?>",
+        open: function(event, ui) {
+            var conf_error = false;
+            // enable button
+            $("#dialog_auto_update_server_pwd ~ .ui-dialog-buttonpane").find("button:contains('<?php echo $LANG['admin_action_db_backup_start_tip'];?>')").prop("disabled", false);
+
+            $("#dialog_auto_update_server_pwd_info").html("").hide();
+            $("#ausp_pwd").val("");
+
+            // check if needed data is available
+            if($("#hid_login").val() == "") {
+                $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_login_missing'];?>').show();
+                conf_error = true;
+            }
+            if($("#hid_pw").val() == "") {
+                $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_pwd_missing'];?>').show();
+                conf_error = true;
+            }
+            if($("#hid_url").val() == "") {
+                $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_url_missing'];?>').show();
+                conf_error = true;
+            }
+            if($("#hid_url").val() != "" && $("#hid_url").val().substring(0,6) != "ssh://") {
+                $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_url_must_be_ssh'];?>').show();
+                conf_error = true;
+            }
+            if (conf_error == true) {
+                // disable button
+                $("#dialog_auto_update_server_pwd ~ .ui-dialog-buttonpane").find("button:contains('<?php echo $LANG['admin_action_db_backup_start_tip'];?>')").prop("disabled", true);
+
+                return false;
+            }
+        },
+        buttons: {
+            "<?php echo $LANG['admin_action_db_backup_start_tip'];?>": function() {
+                // check if new password is set
+                if($("#ausp_pwd").val() == "") {
+                    $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_new_pwd_missing'];?>').show();
+                    return false;
+                }
+                // check if new password is set
+                if($("#ausp_ssh_root").val() == "" || $("#ausp_ssh_pwd").val() == "") {
+                    $("#dialog_auto_update_server_pwd_info").html('<i class="fa fa-warning"></i>&nbsp;<?php echo $LANG['error_ssh_credentials_missing'];?>').show();
+                    return false;
+                }
+
+                // show progress
+                $("#dialog_auto_update_server_pwd_status").html('<i class="fa fa-cog fa-spin"></i>&nbsp;<?php echo $LANG['please_wait'];?>&nbsp;...&nbsp;').attr("class","").show();
+                $("#dialog_auto_update_server_pwd_info").html("").hide();
+
+                //prepare data
+                    var data = '{"currentId":"'+$('#selected_items').val() + '", '+
+                    '"new_pwd":"'+$('#ausp_pwd').val()+'", '+
+                    '"ssh_root":"'+$('#ausp_ssh_root').val()+'", '+
+                    '"ssh_pwd":"'+$('#ausp_ssh_pwd').val()+'", '+
+                    '"user_id":"<?php echo $_SESSION['user_id'];?>"}';
+console.log(data);
+                $.post(
+                    "sources/utils.queries.php",
+                    {
+                        type        : "server_auto_update_password",
+                        data        : prepareExchangedData(data, "encode", "<?php echo $_SESSION['key'];?>"),
+                        key         : "<?php echo $_SESSION['key'];?>"
+                    },
+                    function(data) {
+                        data = prepareExchangedData(data , "decode", "<?php echo $_SESSION['key'];?>");
+                        //check if format error
+                        if (data.error != "") {
+                            $("#dialog_auto_update_server_pwd_info").html("Error: "+data.error).show();
+                            $("#dialog_auto_update_server_pwd_status").html("<?php echo $LANG['auto_update_server_password_info'];?>");
+                        } else {
+                            // tbc
+                            $("#dialog_auto_update_server_pwd_status").html("done "+data.text);
+
+                            // change password in item form
+                            $('#edit_pw1').val($('#ausp_pwd').val());
+                            $("#hid_pw").val($('#ausp_pwd').val());
+
+                            // change quick password
+                            new Clipboard("#menu_button_copy_pw, #button_quick_pw_copy", {
+                                text: function() {
+                                    return unsanitizeString($('#edit_pw1').val());
+                                }
+                            });
+                            
+                            $("#button_quick_pw_copy").show();
+                        }
+                        console.log("done");
+                    }
+                );
+            },
+            "<?php echo $LANG['close'];?>": function() {
+                $("#dialog_auto_update_server_pwd").dialog("close");
+            }
+        },
+        close: function() {
+            $("#ausp_pwd").val("");
+            $("#dialog_auto_update_server_pwd").dialog("close");
+        }
+    });
+
+    // button to generate    
+    $("#ausp_but_generate").click(function() {
+        $("#ausp_pwd_loader").show();
+        $.post(
+            "sources/main.queries.php",
+            {
+                type       : "generate_a_password",
+                size       : 12,
+                secure     : false,
+                symbols    : true,
+                capitalize : true,
+                numerals   : true
+            },
+            function(data) {
+                data = prepareExchangedData(data, "decode", "<?php echo $_SESSION['key'];?>");
+                if (data.error == "true") {
+                    $("#dialog_auto_update_server_pwd_info").html(data.error_msg).show();
+                } else {
+                    $("#ausp_pwd").val(data.key);
+                }
+                $("#ausp_pwd_loader").hide();
+            }
+        );
+    });
     
     // open personal pwds re-encryption dialogbox
     if ($("#personal_upgrade_needed").val() == "1") {        
@@ -3688,5 +3821,12 @@ function reEncryptPersonalPwds(remainingIds, currentId, nb)
             }
         }
     });
+}
+
+function serverAutoChangePwd()
+{
+    console.log("opening");
+    $("#dialog_auto_update_server_pwd_status").html("<?php echo $LANG['auto_update_server_password_info']?>");
+    $("#dialog_auto_update_server_pwd").dialog("open");
 }
 </script>

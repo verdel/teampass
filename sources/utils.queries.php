@@ -295,4 +295,84 @@ switch ($_POST['type']) {
 
         echo '[{"error" : ""}]';
         break;
+
+
+    #CASE auto update server password
+    case "server_auto_update_password":
+        if ($_POST['key'] != $_SESSION['key']) {
+            echo '[{"error" : "something_wrong"}]';
+            break;
+        }
+
+        // decrypt and retreive data in JSON format
+        $dataReceived = prepareExchangedData($_POST['data'], "decode");
+
+        // get data about item
+        $dataItem = DB::queryfirstrow(
+            "SELECT label, login, pw, pw_iv, url
+            FROM ".prefix_table("items")." 
+            WHERE id=%i",
+            $dataReceived['currentId']
+        );
+
+        // decrypt password
+        $oldPw = $dataItem['pw'];
+        $oldPwIV = $dataItem['pw_iv'];
+        $oldPwClear = cryption($oldPw, SALT, $oldPwIV, "decrypt");
+
+        // encrypt new password
+        $encrypt = cryption(
+            $dataReceived['new_pwd'], 
+            SALT, 
+            "", 
+            "encrypt"
+        );
+
+
+        // connect ot server with ssh
+        $ret = "";
+        stream_resolve_include_path($_SESSION['settings']['cpassman_dir'].'/includes/libraries/Authentication/phpseclib/Crypt/RC4.php');
+        include($_SESSION['settings']['cpassman_dir'].'/includes/libraries/Authentication/phpseclib/Net/SSH2.php'); 
+        $parse = parse_url($dataItem['url']);
+        $ssh = new Net_SSH2($parse['host'], $parse['port']);
+        if (!$ssh->login($dataReceived['ssh_root'], $dataReceived['ssh_pwd'])) {
+           echo prepareExchangedData(
+                array(
+                    "error" => "Login failed.<br />Error description: <i>".$_SESSION['sshError']."</i>",
+                    "text" => ""
+                ), 
+                "encode"
+            );
+            break;
+        }else{ 
+            // send ssh script for user change
+            $ret .= "<br />".$LANG['ssh_answer_from_server'].'&nbsp;';
+            $ret .= $ssh->exec('echo -e "'.$dataReceived['new_pwd'].'\n'.$dataReceived['new_pwd'].'" | passwd '.$dataItem['login']);
+        } 
+
+        // store new password
+        DB::update(
+            prefix_table("items"),
+            array(
+                'pw' => $encrypt['string'],
+                'pw_iv' => $encrypt['iv']
+               ),
+            "id = %i",
+            $dataReceived['currentId']
+        );
+
+        // update log
+        logItems($dataReceived['currentId'], $dataItem['label'], $_SESSION['user_id'], 'at_modification', $_SESSION['login'], 'at_pw :'.$oldPw, $oldPwIV);
+
+        $ret .= "<br />".$LANG['ssh_action_performed'];
+
+        // finished
+        echo prepareExchangedData(
+            array(
+                "error" => "" ,
+                "text" => str_replace("\n", "<br />", $ret)
+            ), 
+            "encode"
+        );
+        break;
 }

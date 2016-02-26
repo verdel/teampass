@@ -222,6 +222,7 @@ echo '
                                         <li id="menu_button_otv" onclick="prepareOneTimeView()"><i class="fa fa-users fa-fw"></i>&nbsp; '.$LANG['one_time_item_view'].'</li>
                                         ', isset($_SESSION['settings']['enable_email_notification_on_item_shown']) && $_SESSION['settings']['enable_email_notification_on_item_shown'] == 1 ? '
                                         <li id="menu_button_notify"><i class="fa fa-volume-up fa-fw"></i>&nbsp; '.$LANG['link_copy'].'</li>' : '', '
+                                        <li id="menu_button_otv" onclick="serverAutoChangePwd()"><i class="fa fa-cloud-upload fa-fw"></i>&nbsp; '.$LANG['update_server_password'].'</li>
                                     </ul>
                             </ul>
                         </div>
@@ -922,5 +923,31 @@ if (isset($_SESSION['settings']['enable_pf_feature']) && $_SESSION['settings']['
         </div>
     </div>';
 }
+
+// AUTO UPDATE Server dialogbox
+    echo '
+    <div id="dialog_auto_update_server_pwd" style="display:none;">
+        <div style="text-align:left;">
+            <div id="ausp_generate_pwd">
+                <div>
+                <label for="ausp_pwd">'.$LANG['index_new_pw'].':</label>&nbsp;
+                <input type="text" id="ausp_pwd" class="menu_250 text ui-widget-content ui-corner-all" style="padding:3px;" />
+                &nbsp;<i id="ausp_but_generate" class="fa fa-refresh fa-border fa-sm tip" style="cursor:pointer;padding:3px;" title="'.$LANG['click_to_generate'].'"></i>
+                &nbsp;<i id="ausp_pwd_loader" style="display:none;margin-left:5px;" class="fa fa-cog fa-spin"></i>&nbsp;
+                </div>
+                <div>
+                    <label for="ausp_ssh_root">'.$LANG['ssh_root_user'].':</label>&nbsp;
+                    <input type="text" id="ausp_ssh_root" class="menu_250 text ui-widget-content ui-corner-all" style="padding:3px;" value="root" />
+                </div>
+                <div>
+                    <label for="ausp_ssh_pwd">'.$LANG['ssh_root_pwd'].':</label>&nbsp;
+                    <input type="text" id="ausp_ssh_pwd" class="menu_250 text ui-widget-content ui-corner-all" style="padding:3px;" />
+                </div>
+            </div>
+            <hr>
+            <div id="dialog_auto_update_server_pwd_status" style="margin:15px 0 15px 0;">'.$LANG['auto_update_server_password_info'].'</div>
+            <div id="dialog_auto_update_server_pwd_info" style="text-align:center;padding:5px;display:none;" class="ui-state-error ui-corner-all"></div>
+        </div>
+    </div>';
 
 require_once 'items.load.php';

@@ -14,6 +14,22 @@
  */
 global $LANG;
 $LANG = array (
+    'ssh_answer_from_server' => 'Answer from server:',
+    'ssh_action_performed' => 'Password updated for this Item.<br /><br />You can now close this popup.',
+    'ssh_root_user' => 'SSH root user',
+    'ssh_root_pwd' => 'SSH root password',
+    'error_new_pwd_missing' => 'New password is missing!',
+    'click_to_generate' => 'Click to generate',
+    'update_server_password' => 'Update server\'s password',
+    'error_login_missing' => 'Login is missing!',
+    'error_pwd_missing' => 'Password is missing!',
+    'error_url_missing' => 'URL is missing!',
+    'error_ssh_credentials_missing' => 'SSH credentials are missing!',
+    'error_url_must_be_ssh' => 'URL must start with SSH protocol!',
+    'auto_update_server_password_info' => 'Clicking START button will automatically perform next steps:<ul><li>Connect through SSH to Linux server using SSH credentials and field `URL`,</li><li>Change user password on Linux server</il><li>Save the new password in Teampass</il><li>Close SSH connection</li></ul><br /><b>Please perform necessary checks before starting.</b>',
+    'error_personal_sk_expected' => 'You shall first enter your personal saltkey!',
+    'reload_page_after_user_account_creation' => 'Your account has been created. This page will be automatically reloaded in 3 seconds ...',
+    'error_bad_credentials' => 'Login credentials do not correspond!',
     'user_ga_code' => 'Send GoogleAuthenticator to user by email',
     'send_ga_code' => 'Google Authenticator for user',
     'error_no_email' => 'This user has no email set!',

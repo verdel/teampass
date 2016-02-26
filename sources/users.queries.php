@@ -268,6 +268,7 @@ if (!empty($_POST['type'])) {
                 echo '[ { "error" : "'.addslashes($LANG['error_user_exists']).'" } ]';
             }
             break;
+            
         /**
          * Delete the user
          */
@@ -316,16 +317,7 @@ if (!empty($_POST['type'])) {
                     $tree->rebuild();
                 }
                 // update LOG
-                DB::insert(
-                    prefix_table("log_system"),
-                    array(
-                        'type' => 'user_mngt',
-                        'date' => time(),
-                        'label' => 'at_user_deleted',
-                        'qui' => $_SESSION['user_id'],
-                        'field_1' => $_POST['id']
-                       )
-                );
+                logEvents('user_mngt', 'at_user_deleted', $_SESSION['user_id'], $_SESSION['login'], $_POST['id']);
             } else {
                 // lock user in database
                 DB::update(
@@ -338,19 +330,11 @@ if (!empty($_POST['type'])) {
                     $_POST['id']
                 );
                 // update LOG
-                DB::insert(
-                    prefix_table("log_system"),
-                    array(
-                        'type' => 'user_mngt',
-                        'date' => time(),
-                        'label' => 'at_user_locked',
-                        'qui' => $_SESSION['user_id'],
-                        'field_1' => $_POST['id']
-                       )
-                );
+                logEvents('user_mngt', 'at_user_locked', $_SESSION['user_id'], $_SESSION['login'], $_POST['id']);
             }
             echo '[ { "error" : "no" } ]';
             break;
+
         /**
          * UPDATE EMAIL OF USER
          */
