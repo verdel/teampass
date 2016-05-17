@@ -119,6 +119,7 @@ switch ($_POST['type']) {
             $lexer = new Lexer($config);
             $config
                 ->setIgnoreHeaderLine("true")
+                ->setDelimiter(";")
                 //->setToCharset('UTF-8')
                 //->setFromCharset('SJIS-win')
             ;

@@ -155,7 +155,7 @@ foreach ($folders as $t) {
 
         // CSV IMPORT
         var uploader_csv = new plupload.Uploader({
-            runtimes : "gears,html5,flash,silverlight,browserplus",
+            runtimes : "html4",
             browse_button : "pickfiles_csv",
             container : "upload_container_csv",
             max_file_size : "10mb",
@@ -177,7 +177,7 @@ foreach ($folders as $t) {
                 },
                 BeforeUpload: function (up, file) {
                     up.settings.multipart_params = {
-                        "PHPSESSID":"'.$_SESSION['user_id'];?>",
+                        "PHPSESSID":"<?=$_SESSION['user_id']?>",
                         "csvFile":file.name,
                         "type_upload":"import_items_from_csv"
                     };
