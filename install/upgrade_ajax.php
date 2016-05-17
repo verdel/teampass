@@ -314,6 +314,7 @@ if (isset($_POST['type'])) {
                     $_POST['db_bdd'],
                     $_POST['db_port']
                 );
+                $dbTmp->set_charset('utf8');
                 //echo 'gauge.modify($("pbar"),{values:[0.50,1]});';
                 $res = "Connection is successful";
                 echo 'document.getElementById("but_next").disabled = "";';
@@ -383,6 +384,7 @@ if (isset($_POST['type'])) {
                 $_SESSION['db_bdd'],
                 $_SESSION['db_port']
             );
+            $dbTmp->set_charset('utf8');
             $status = "";
 
             //rename tables

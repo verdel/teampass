@@ -32,7 +32,7 @@ $dbTmp = mysqli_connect(
     $_SESSION['db_bdd'],
     $_SESSION['db_port']
 );
-
+$dbTmp->set_charset('utf8');
 fputs($dbgDuo, "\nStarting suggestion.\n\n");
 // decrypt passwords in suggestion table
 $resData = mysqli_query($dbTmp,

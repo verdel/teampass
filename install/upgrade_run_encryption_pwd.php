@@ -32,7 +32,7 @@ $dbTmp = mysqli_connect(
     $_SESSION['db_bdd'],
     $_SESSION['db_port']
 );
-
+$dbTmp->set_charset('utf8');
 fputs($dbgDuo, "\n\nSELECT id, pw, pw_iv FROM ".$_SESSION['tbl_prefix']."items
     WHERE perso = '0' LIMIT ".$_POST['start'].", ".$_POST['nb']."\n");
 

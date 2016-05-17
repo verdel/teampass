@@ -115,7 +115,7 @@ $dbTmp = mysqli_connect(
 	$_SESSION['db_bdd'],
 	$_SESSION['db_port']
 );
-
+$dbTmp->set_charset('utf8');
 ## Populate table MISC
 $val = array(
 	array('admin', 'max_latest_items', '10',0),

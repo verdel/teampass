@@ -41,7 +41,7 @@ if ($_POST['type'] == "reload_cache_table" || empty($_POST['type'])) {
 		$_SESSION['db_bdd'],
 		$_SESSION['db_port']
 	);
-	
+	$dbTmp->set_charset('utf8');
 	// truncate table
 	mysqli_query($dbTmp, "TRUNCATE TABLE ".$_SESSION['tbl_prefix']."cache");
 

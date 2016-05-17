@@ -118,7 +118,7 @@ $dbTmp = mysqli_connect(
 	$_SESSION['db_bdd'],
 	$_SESSION['db_port']
 );
-
+$dbTmp->set_charset('utf8');
 // add field timestamp to cache table
 $res = addColumnIfNotExist(
 	$_SESSION['tbl_prefix']."cache",
