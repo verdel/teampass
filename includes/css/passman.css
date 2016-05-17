@@ -344,6 +344,17 @@ div.dataTables_processing { z-index: 1; }
 
 .ui-color {background:#F59829 !important;}
 
+#edit_visible_pw{
+font-size: 12pt;
+font-family: "Garamond","Lucida Console","Courier New",Monaco,"Nimbus Mono L",monospace;
+}
+
+#div_item_data_text{
+font-size: 12pt;
+font-style: normal;
+font-family: "Garamond","Lucida Console","Courier New",Monaco,"Nimbus Mono L",monospace;
+}
+
 .btn-default {
     width: 40px;
 }

@@ -69,7 +69,7 @@ switch ($_POST['type']) {
             $path = "";
             foreach ($folders as $val) {
                 if ($path) {
-                    $path .= " » ";
+                    $path .= " >> ";
                 }
                 $path .= $val->title;
             }
@@ -503,7 +503,7 @@ Enter the decryption key : <input type="password" id="saltkey" />
                     if (empty($arboHtml)) {
                         $arboHtml = $arboHtml_tmp;
                     } else {
-                        $arboHtml .= ' » '.$arboHtml_tmp;
+                        $arboHtml .= ' >> '.$arboHtml_tmp;
                     }
                 }
                 fputs($outstream, '

@@ -319,7 +319,7 @@ switch ($_POST['type']) {
     //Check if import KEEPASS file format is what expected
     case "import_file_format_keepass":
         //Initialization
-        $root = $meta = $group = $entry = $key = $title = $notes = $pw = $username = $url = $notKeepassFile = $newItem = $history = $generatorFound = false;
+        $root = $meta = $group = $entry = $key = $title = $notes = $ip = $vm = $os = $mac = $pw = $username = $url = $notKeepassFile = $newItem = $history = $generatorFound = false;
         $name = $levelInProgress = $previousLevel = $fullPath = $historyLevel = $path = $display = $keepassVersion = "";
         $numGroups = $numItems = 0;
         $temparray = $arrFolders = array();
@@ -505,21 +505,33 @@ switch ($_POST['type']) {
                         //Check each node name and get data from some of them
                         if ($entry == true && $nom == "Key" && $elem == "Title") {
                             $title = true;
-                            $notes = $pw = $url = $username = false;
+                            $ip = $vm = $os = $mac = $notes = $pw = $url = $username = false;
                         } elseif ($entry == true && $nom == "Key" && $elem == "Notes") {
                             $notes = true;
-                            $title = $pw = $url = $username = false;
+                            $ip = $vm = $os = $mac = $title = $pw = $url = $username = false;
+                        } elseif ($entry == true && $nom == "Key" && $elem == "IP") {
+                            $ip = true;
+                            $vm = $os = $mac = $notes = $title = $pw = $url = $username = false;
+                        } elseif ($entry == true && $nom == "Key" && $elem == "VM") {
+                            $vm = true;
+                            $ip = $os = $mac = $notes = $title = $pw = $url = $username = false;
+                        } elseif ($entry == true && $nom == "Key" && $elem == "OS") {
+                            $os = true;
+                            $ip = $vm = $mac = $notes = $title = $pw = $url = $username = false;
+                        } elseif ($entry == true && $nom == "Key" && $elem == "MAC") {
+                            $mac = true;
+                            $ip = $vm = $os = $notes = $title = $pw = $url = $username = false;
                         } elseif ($entry == true && $nom == "UUID") {
                             $temparray[KP_UUID] = $elem;
                         } elseif ($entry == true && $nom == "Key" && $elem == "Password") {
                             $pw = true;
-                            $notes = $title = $url = $username = false;
+                            $ip = $vm = $os = $mac = $notes = $title = $url = $username = false;
                         } elseif ($entry == true && $nom == "Key" && $elem == "URL") {
                             $url = true;
-                            $notes = $pw = $title = $username = false;
+                            $ip = $vm = $os = $mac = $notes = $pw = $title = $username = false;
                         } elseif ($entry == true && $nom == "Key" && $elem == "UserName") {
                             $username = true;
-                            $notes = $pw = $url = $title = false;
+                            $ip = $vm = $os = $mac = $notes = $pw = $url = $title = false;
                         } elseif ($group == true && $nom == "Name") {
                             $temparray[KP_GROUP] = addslashes(preg_replace('#[\r\n]#', '', $elem));
                             $temparray['level'] = $xmlLevel;
@@ -570,7 +582,19 @@ switch ($_POST['type']) {
                             $temparray[KP_TITLE] = sanitiseString($elem, '');
                         } elseif ($notes == true && $nom == "Value") {
                             $notes = false;
-                            $temparray[KP_NOTES] = sanitiseString($elem, '');
+                            $temparray[KP_NOTES] .= sanitiseString($elem, '').$lineEndSeparator;
+                        } elseif ($ip == true && $nom == "Value") {
+                            $ip = false;
+                            $temparray[KP_NOTES] .= "IP: ".sanitiseString($elem, '').$lineEndSeparator;
+                        } elseif ($mac == true && $nom == "Value") {
+                            $mac = false;
+                            $temparray[KP_NOTES] .= "MAC: ".sanitiseString($elem, '').$lineEndSeparator;
+                        } elseif ($vm == true && $nom == "Value") {
+                            $vm = false;
+                            $temparray[KP_NOTES] .= "VM: ".sanitiseString($elem, '').$lineEndSeparator;
+                        } elseif ($os == true && $nom == "Value") {
+                            $os = false;
+                            $temparray[KP_NOTES] .= "OS: ".sanitiseString($elem, '').$lineEndSeparator;
                         } elseif ($pw == true && $nom == "Value") {
                             $pw = false;
                             $temparray[KP_PW] = sanitiseString($elem, '');

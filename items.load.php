@@ -425,6 +425,7 @@ function pwGenerate(elem)
             numerals      : $("#"+elem+'pw_numerics').prop("checked"),
             capitalize      : $("#"+elem+'pw_maj').prop("checked"),
             symbols      : $("#"+elem+'pw_symbols').prop("checked"),
+            ambiguous   : $("#"+elem+'pw_ambiguous').prop("checked"),
             secure  : $("#"+elem+'pw_secure').prop("checked"),
             elem      : elem,
             force      : "false"

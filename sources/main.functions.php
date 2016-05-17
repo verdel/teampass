@@ -797,7 +797,7 @@ function updateCacheTable($action, $id = "")
                 if (empty($folder)) {
                     $folder = stripslashes($elem->title);
                 } else {
-                    $folder .= " » ".stripslashes($elem->title);
+                    $folder .= " >> ".stripslashes($elem->title);
                 }
             }
             // store data
@@ -844,7 +844,7 @@ function updateCacheTable($action, $id = "")
             if (empty($folder)) {
                 $folder = stripslashes($elem->title);
             } else {
-                $folder .= " » ".stripslashes($elem->title);
+                $folder .= " >> ".stripslashes($elem->title);
             }
         }
         // finaly update
@@ -893,7 +893,7 @@ function updateCacheTable($action, $id = "")
             if (empty($folder)) {
                 $folder = stripslashes($elem->title);
             } else {
-                $folder .= " » ".stripslashes($elem->title);
+                $folder .= " >> ".stripslashes($elem->title);
             }
         }
         // finaly update
