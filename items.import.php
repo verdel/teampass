@@ -219,7 +219,7 @@ foreach ($folders as $t) {
 
         // KEYPASS IMPORT
         var uploader_kp = new plupload.Uploader({
-            runtimes : "gears,html5,flash,silverlight,browserplus",
+            runtimes : "html4",
             browse_button : "pickfiles_kp",
             container : "upload_container_kp",
             max_file_size : "10mb",
@@ -242,7 +242,7 @@ foreach ($folders as $t) {
                 BeforeUpload: function (up, file) {
                     $("#import_status_ajax_loader").show();
                     up.settings.multipart_params = {
-                        "PHPSESSID":"'.$_SESSION['user_id'];?>",
+                        "PHPSESSID":"<?=$_SESSION['user_id']?>",
                         "xmlFile":file.name,
                         "type_upload":"import_items_from_keypass"
                     };
